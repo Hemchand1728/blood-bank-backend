@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const BloodRequest = require('../models/BloodRequest');
-const Donor = require('../models/Donor'); // For cross-checking donations
+const Donor = require('../models/donor'); // For cross-checking donations
 const Recipient = require('../models/Recipient'); // ✅ Required for recipient lookup
 
 // POST /api/recipient/request

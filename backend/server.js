@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 const inventoryRoutes = require('./routes/inventory');
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
-const donorRoutes = require('./routes/Donor');
+const donorRoutes = require('./routes/donor');
 const recipientRoutes = require('./routes/recipient'); // ✅ Added recipient routes
 
 // 🌐 Use Routes

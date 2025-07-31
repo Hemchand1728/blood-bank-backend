@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require("mongoose");
-const Donor = require('../models/Donor');
+const donor = require('../models/donor');
 const Donation = require('../models/Donation');
 const Inventory = require('../models/Inventory');
 
