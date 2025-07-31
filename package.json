@@ -1,4 +1,10 @@
 {
+  "name": "blood-bank-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "dns": "^0.2.2"
   }
