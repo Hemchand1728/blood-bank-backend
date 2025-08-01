@@ -1,4 +1,4 @@
-const API = 'http://localhost:5050/api';
+const API = 'https://blood-bank-backend-bbp2.onrender.com/api';
 
 // Register
 if (document.getElementById('registerForm')) {
