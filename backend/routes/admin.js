@@ -98,21 +98,32 @@ router.put('/requests/:id', async (req, res) => {
   }
 
   try {
-    const updated = await BloodRequest.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true, runValidators: true }  // IMPORTANT: Ensures validations run
-    );
-
-    if (!updated) {
+    const request = await BloodRequest.findById(id);
+    if (!request) {
       return res.status(404).json({ message: 'Request not found' });
     }
 
-    res.status(200).json({ message: `Request marked as ${status}` });
+    if (status === 'Approved') {
+      const inventory = await Inventory.findOne({ bloodGroup: request.bloodGroup });
+
+      if (!inventory || inventory.units < 1) {
+        request.status = 'Out of Stock';
+        await request.save();
+        return res.status(200).json({ message: 'Cannot approve: Blood group out of stock. Marked as Out of Stock.' });
+      }
+
+      inventory.units -= 1;
+      await inventory.save();
+    }
+
+    request.status = status;
+    await request.save();
+
+    res.status(200).json({ message: `Request marked as ${request.status}` });
 
   } catch (err) {
     console.error("❌ Status update error:", err.message);
-    res.status(500).json({ message: err.message });  // Return detailed error
+    res.status(500).json({ message: err.message });
   }
 });
 
