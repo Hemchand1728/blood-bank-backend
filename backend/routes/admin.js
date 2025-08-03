@@ -140,4 +140,26 @@ router.get('/users', async (req, res) => {
   }
 });
 
+// ✅ GET /api/admin/stats - Dashboard summary
+router.get('/stats', async (req, res) => {
+  try {
+    const totalDonors = await User.countDocuments({ role: 'donor' });
+    const totalRecipients = await User.countDocuments({ role: 'recipient' });
+    const pendingRequests = await BloodRequest.countDocuments({ status: 'Pending' });
+
+    const inventory = await Inventory.find();
+    const totalUnits = inventory.reduce((sum, item) => sum + (item.units || 0), 0);
+
+    res.status(200).json({
+      totalDonors,
+      totalRecipients,
+      pendingRequests,
+      totalUnits
+    });
+  } catch (err) {
+    console.error("❌ Dashboard stats error:", err.message);
+    res.status(500).json({ message: "Failed to fetch dashboard stats" });
+  }
+});
+
 module.exports = router;
