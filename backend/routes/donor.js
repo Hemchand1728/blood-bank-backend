@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require("mongoose");
-const donor = require('../models/donor');
+const Donor = require('../models/donor');  // ✅ FIXED name
 const Donation = require('../models/Donation');
 const Inventory = require('../models/Inventory');
-
 
 // ====================
 // Add New Donor
@@ -18,7 +17,7 @@ router.post('/add', async (req, res) => {
       return res.status(400).json({ message: '❌ Missing donor fields' });
     }
 
-    const existingDonor = await Donor.findOne({ email });
+    const existingDonor = await Donor.findOne({ email });  // ✅ FIXED model name
     if (existingDonor) {
       return res.status(409).json({ message: '❌ Donor already exists' });
     }
@@ -51,7 +50,7 @@ router.post('/donate', async (req, res) => {
       return res.status(400).json({ message: '❌ Missing fields' });
     }
 
-    const donor = await donor.findOne({ email });
+    const donor = await Donor.findOne({ email });  // ✅ FIXED model reference
     if (!donor) {
       return res.status(404).json({ message: '❌ Donor not found' });
     }
@@ -68,9 +67,8 @@ router.post('/donate', async (req, res) => {
 
 // ====================
 // Get Donation History
-// GET /api/donor/history?email=someone@example.com
+// GET /api/donor/history/:email - Fetch donation history from Inventory
 // ====================
-// GET /api/donor/history/:email - Fetch donation history from Inventory by donorEmail
 router.get('/history/:email', async (req, res) => {
   const { email } = req.params;
   if (!email) {
@@ -90,8 +88,5 @@ router.get('/history/:email', async (req, res) => {
     res.status(500).json({ message: '❌ Server error' });
   }
 });
-
-
-
 
 module.exports = router;
