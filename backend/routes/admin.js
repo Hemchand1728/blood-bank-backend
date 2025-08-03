@@ -140,15 +140,14 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// ✅ GET /api/admin/stats - Dashboard summary
+// GET /api/admin/stats
 router.get('/stats', async (req, res) => {
   try {
     const totalDonors = await User.countDocuments({ role: 'donor' });
     const totalRecipients = await User.countDocuments({ role: 'recipient' });
     const pendingRequests = await BloodRequest.countDocuments({ status: 'Pending' });
-
     const inventory = await Inventory.find();
-    const totalUnits = inventory.reduce((sum, item) => sum + (item.units || 0), 0);
+    const totalUnits = inventory.reduce((sum, item) => sum + item.units, 0);
 
     res.status(200).json({
       totalDonors,
@@ -157,8 +156,8 @@ router.get('/stats', async (req, res) => {
       totalUnits
     });
   } catch (err) {
-    console.error("❌ Dashboard stats error:", err.message);
-    res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    console.error("❌ Failed to fetch stats:", err.message);
+    res.status(500).json({ message: "Server error while fetching stats" });
   }
 });
 
