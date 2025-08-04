@@ -106,10 +106,12 @@ router.put('/requests/:id', async (req, res) => {
     if (status === 'Approved') {
       const inventory = await Inventory.findOne({ bloodGroup: request.bloodGroup });
 
-      if (!inventory || inventory.units < 1) {
-        request.status = 'Out of Stock';
-        await request.save();
-        return res.status(200).json({ message: 'Cannot approve: Blood group out of stock. Marked as Out of Stock.' });
+      if (!inventory) {
+        return res.status(400).json({ message: '❌ Blood group not found in inventory' });
+      }
+
+      if (inventory.units < 1) {
+        return res.status(400).json({ message: '❌ Insufficient blood units available in inventory' });
       }
 
       inventory.units -= 1;
