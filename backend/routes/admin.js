@@ -111,7 +111,9 @@ router.put('/requests/:id', async (req, res) => {
       }
 
       if (inventory.units < 1) {
-        return res.status(400).json({ message: '❌ Insufficient blood units available in inventory' });
+        request.status = 'Out of Stock';
+        await request.save();
+        return res.status(200).json({ message: 'Out of Stock' });
       }
 
       inventory.units -= 1;
@@ -121,7 +123,7 @@ router.put('/requests/:id', async (req, res) => {
     request.status = status;
     await request.save();
 
-    res.status(200).json({ message: `Request marked as ${request.status}` });
+    res.status(200).json({ message: 'Status updated' });
 
   } catch (err) {
     console.error("❌ Status update error:", err.message);
