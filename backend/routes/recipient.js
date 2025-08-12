@@ -2,19 +2,16 @@
 const express = require('express');
 const router = express.Router();
 const BloodRequest = require('../models/BloodRequest');
-const Donor = require('../models/donor'); // For cross-checking donations
-const Recipient = require('../models/Recipient'); // ✅ Required for recipient lookup
-
-// POST /api/recipient/request/add
 const authMiddleware = require('../middleware/auth');
-router.post('/request/add', authMiddleware, async (req, res) => {
+
+// POST /api/recipient/request
+router.post('/request', authMiddleware, async (req, res) => {
   try {
     const { email, bloodGroup, location, reason } = req.body;
     if (!email || !bloodGroup || !location || !reason) {
       return res.status(400).json({ message: '❌ Missing request fields' });
     }
 
-  // Create and save blood request
     const newRequest = new BloodRequest({
       email,
       bloodGroup,
@@ -24,7 +21,6 @@ router.post('/request/add', authMiddleware, async (req, res) => {
     });
 
     await newRequest.save();
-
     return res.status(200).json({ message: "✅ Your Request Submitted Successfully" });
 
   } catch (error) {
@@ -33,10 +29,9 @@ router.post('/request/add', authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ GET /api/recipient/requests?email=someone@example.com
+// GET /api/recipient/requests
 router.get('/requests', authMiddleware, async (req, res) => {
   const { email } = req.query;
-
   if (!email) {
     return res.status(400).json({ message: 'Email is required' });
   }
