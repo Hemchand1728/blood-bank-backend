@@ -5,8 +5,9 @@ const BloodRequest = require('../models/BloodRequest');
 const Donor = require('../models/donor'); // For cross-checking donations
 const Recipient = require('../models/Recipient'); // ✅ Required for recipient lookup
 
-// POST /api/recipient/request
-router.post('/request/add', async (req, res) => {
+// POST /api/recipient/request/add
+const authMiddleware = require('../middleware/auth');
+router.post('/request/add', authMiddleware, async (req, res) => {
   try {
     const { email, bloodGroup, location, reason } = req.body;
     if (!email || !bloodGroup || !location || !reason) {
@@ -33,7 +34,7 @@ router.post('/request/add', async (req, res) => {
 });
 
 // ✅ GET /api/recipient/requests?email=someone@example.com
-router.get('/requests', async (req, res) => {
+router.get('/requests', authMiddleware, async (req, res) => {
   const { email } = req.query;
 
   if (!email) {
